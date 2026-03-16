@@ -1,4 +1,14 @@
-public class Main{
+/**
+ * UseCase1HotelBookingApp
+ *
+ * This class represents the entry point of the Hotel Booking Management System.
+ * It demonstrates how a Java application starts execution using the main() method
+ * and prints a welcome message along with the application name and version.
+ *
+ * @author Swapneel Mondal
+ * @version 1.0
+ */
+public class Main {
 
     /**
      * The main method is the starting point of the Java application.
