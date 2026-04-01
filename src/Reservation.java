@@ -1,71 +1,70 @@
+import java.io.Serializable;
+
 /**
  * ============================================================
  * CLASS - Reservation
  * ============================================================
  * Represents a guest booking request.
+ * Supports:
+ * 1. Concurrency (used by multiple threads safely)
+ * 2. Persistence (Serializable for file storage)
  *
- * @version 7.0
+ * @version 6.0 (Thread-Compatible + Persistent)
  */
+public class Reservation implements Serializable {
 
-public class Reservation {
+    // Recommended for Serializable classes
+    private static final long serialVersionUID = 1L;
 
     private String reservationId;
     private String guestName;
     private String roomType;
-    private String status; // ✅ NEW (UC10)
 
-    // ✅ New constructor (recommended)
+    /**
+     * Constructor to initialize reservation
+     */
     public Reservation(String reservationId, String guestName, String roomType) {
         this.reservationId = reservationId;
         this.guestName = guestName;
         this.roomType = roomType;
-        this.status = "CONFIRMED"; // default status
     }
 
-    // ✅ Old constructor (backward compatibility)
-    public Reservation(String guestName, String roomType) {
-        this.reservationId = "R" + System.currentTimeMillis();
-        this.guestName = guestName;
-        this.roomType = roomType;
-        this.status = "CONFIRMED"; // default status
-    }
-
-    // ✅ Getters
+    /**
+     * Get Reservation ID
+     */
     public String getReservationId() {
         return reservationId;
     }
 
+    /**
+     * Get Guest Name
+     */
     public String getGuestName() {
         return guestName;
     }
 
+    /**
+     * Get Room Type
+     */
     public String getRoomType() {
         return roomType;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    // ✅ Setter for status (used in cancellation)
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    // ✅ Display method
+    /**
+     * Display reservation details
+     */
     public void displayReservation() {
-        System.out.println("Reservation ID: " + reservationId +
-                " | Guest: " + guestName +
-                " | Room: " + roomType +
-                " | Status: " + status);
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Guest Name   : " + guestName);
+        System.out.println("Room Type    : " + roomType);
+        System.out.println("-----------------------------");
     }
 
-    // ✅ toString for reporting (UC8 + UC10)
+    /**
+     * Override toString() for easy printing
+     */
     @Override
     public String toString() {
-        return "Reservation ID: " + reservationId +
-                ", Guest: " + guestName +
-                ", Room Type: " + roomType +
-                ", Status: " + status;
+        return reservationId + " | " + guestName + " | " + roomType;
     }
 }
