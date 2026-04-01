@@ -6,12 +6,13 @@ import java.util.Map;
  * CLASS - RoomInventory
  * ============================================================
  * Manages centralized room availability using HashMap.
+ * Now supports thread-safe operations for concurrent booking.
  *
- * @version 3.0
+ * @version 4.0 (Thread-Safe)
  */
 public class RoomInventory {
 
-    // Centralized inventory storage
+    // Centralized inventory storage (shared resource)
     private HashMap<String, Integer> inventory;
 
     /**
@@ -24,30 +25,53 @@ public class RoomInventory {
     /**
      * Register a room type with availability
      */
-    public void addRoomType(String roomType, int count) {
+    public synchronized void addRoomType(String roomType, int count) {
         inventory.put(roomType, count);
     }
 
     /**
      * Get current availability
      */
-    public int getAvailability(String roomType) {
+    public synchronized int getAvailability(String roomType) {
         return inventory.getOrDefault(roomType, 0);
     }
 
     /**
      * Update availability
      */
-    public void updateAvailability(String roomType, int newCount) {
+    public synchronized void updateAvailability(String roomType, int newCount) {
         inventory.put(roomType, newCount);
+    }
+
+    /**
+     * ✅ NEW METHOD: Thread-safe room allocation
+     * This is the CRITICAL SECTION for concurrency
+     */
+    public synchronized boolean allocateRoom(String roomType) {
+
+        int available = inventory.getOrDefault(roomType, 0);
+
+        if (available > 0) {
+            inventory.put(roomType, available - 1);
+
+            System.out.println(Thread.currentThread().getName() +
+                    " allocated 1 " + roomType + " room. Remaining: " + (available - 1));
+
+            return true;
+        } else {
+            System.out.println(Thread.currentThread().getName() +
+                    " FAILED to allocate " + roomType + " (No rooms left)");
+
+            return false;
+        }
     }
 
     /**
      * Display entire inventory
      */
-    public void displayInventory() {
+    public synchronized void displayInventory() {
 
-        System.out.println("Current Inventory:");
+        System.out.println("\nCurrent Inventory:");
 
         for (Map.Entry<String, Integer> entry : inventory.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
